@@ -58,7 +58,7 @@ class Thompson{
 
 int main(){
 	
-	Minimizacion algoritmo = Minimizacion();
+	Thompson algoritmo = Thompson();
 	algoritmo.iniciarAlgoritmo()
 	
 	system("PAUSE");
