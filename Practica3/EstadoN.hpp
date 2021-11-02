@@ -12,6 +12,9 @@ class EstadoN : public Estado{
 	public:
 		void mostrarNucleo();
 		void ingresarNucleo(int estado);
+		int obtenerNucleo(int i);
+		int nucleoTamanio();
 		void marcarDestado();
 		void desmarcarDestado();
+		int obtenerDestado();
 };

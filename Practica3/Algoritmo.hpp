@@ -18,5 +18,5 @@ class Algoritmo{
 		void iniciarAlgoritmo();
 		EstadoN mover(AFN afx,EstadoN T, EstadoN nuevoC, int indiceSimbolo);
 		EstadoN cerradura_E(EstadoN T, AFN afn, int auxEstado, int nSimbolos);
-		int destado();
+		void destado();
 };

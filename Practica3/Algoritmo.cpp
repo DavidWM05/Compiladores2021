@@ -53,9 +53,9 @@ void Algoritmo::iniciarAlgoritmo(){
 	afn.solicitarTransiciones();
 	//-------------------------------------------------------
 	
-	destados=1;//hay estados sin marcar
-	while(destados!=0){
-		if(candidatos.empty()==true){//si el vector candidato esta vacio entonces hay que agregar el candidato inicial
+	//destados=1;//hay estados sin marcar
+	do{
+		if(candidatos.empty()==true){//si el vector candidato ESTA vacio entonces hay que agregar el candidato inicial
 			EstadoN T;
 			T.marcarDestado();
 			T.ingresarNucleo(0);	//Estado inicial
@@ -72,16 +72,73 @@ void Algoritmo::iniciarAlgoritmo(){
 			candidatos.push_back(T);
 			
 			//se evalua a donde se llega con los n simbolos en el estado nuevo A o inicial
+			
+			for(int i=0;i<nSimbolos-1;i++){//se omite el simbolo epsilon
+				EstadoN nuevoC;
+				nuevoC = mover(afn,T,nuevoC,i);//Se obtiene el nucleo
+				nuevoC.marcarDestado();
+				candidatos.push_back(nuevoC);
+			}
+			
+			destado();
+		}
+		else{						 //El vector candidato NO esta vacio
+			EstadoN T;
+			int indiceCandidato;	//variable que guardara el indice en el vector de candidatos para despues poder desmarcarlo
+			
+			for(int i=0;i<candidatos.size();i++){ //se recorren los candidatos hasta encontrar el siguiente destado marcado
+				EstadoN auxiliar = candidatos[i];
+				
+				if(auxiliar.obtenerDestado()!=0){
+					T = candidatos[i];
+					indiceCandidato = i;
+					break;
+				}else{
+					continue;
+				}
+			}
+			
+			for(int i=0;i<T.nucleoTamanio();i++){//For para recorrer nucleo
+				int estado = T.obtenerNucleo(i);
+				Estado auxiliar = afn.obtenerT_Estado(estado,nSimbolos-1);	//Se obtienen todas las transiciones epsilon del estado n
+				
+				if(auxiliar.estaVacia()!=true){//Se verifica que en ese indice de nucleo si existan transiciones epsilon
+				
+					for(int j=0;j<auxiliar.obtenerTamanio();j++){ //se recorren los estados que se pasa en esa transicion epsilon
+						int auxEstado = auxiliar.obtenerTransicion(j);
+						T.agregarTransicion(auxEstado);
+						T = cerradura_E(T,afn,auxEstado,nSimbolos);// Estado inicial | AFN | estado epsilon 
+					}	
+				}else{//El estado no tiene transiciones epsilon, no se hace nada
+					continue;
+				}
+			}//fin de for para recorrer nucleo
+			
+			T.desmarcarDestado();
+			candidatos[indiceCandidato]=T;
+			
+			/*
+			
+			
+			
+			
+			
+			candidatos.push_back(T);
+			
+			//se evalua a donde se llega con los n simbolos en el estado nuevo A o inicial
 			EstadoN nuevoC;
 			for(int i=0;i<nSimbolos-2;i++){//se omite el simbolo epsilon
 				nuevoC = mover(afn,T,nuevoC,i);
 			}
 			nuevoC.marcarDestado();
 			candidatos.push_back(nuevoC);
-		}else{
+			*/
 			
+			destado();					
 		}
-	}//end while
+	}while(destados!=0);//end do - while
+
+	cout<<"Destados: "<<destados<<endl;
 	
 	for(int i=0;i<candidatos.size();i++){//--------------IMPRESION DE LOS CANDIDATOS
 		cout<< "Estado "<<i<<"N:{";
@@ -124,8 +181,13 @@ EstadoN Algoritmo::cerradura_E(EstadoN T, AFN afn, int auxEstado,int nSimbolos){
 		return T;	
 	}
 }
-int Algoritmo::destado(){//comprueba si quedan estado sin marcar
-	for(int i;;i++)
-	return 1;
+void Algoritmo::destado(){//comprueba si quedan estado sin marcar
+	for(int i=0;i<candidatos.size();i++){
+		EstadoN aux = candidatos[i];
+		destados = aux.obtenerDestado();
+	}
 }
+
+
+
 
