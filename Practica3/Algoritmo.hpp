@@ -7,6 +7,8 @@
 #include "Algoritmo.hpp"
 #include "AFN.hpp"
 
+using namespace std;
+
 class Algoritmo{
 	private:
 		vector<EstadoN> candidatos;
@@ -14,7 +16,7 @@ class Algoritmo{
 	
 	public:
 		void iniciarAlgoritmo();
-		void mover(AFN afx,EstadoN T, EstadoN nuevoC, int indiceSimbolo);
-		void cerradora_E();		
+		EstadoN mover(AFN afx,EstadoN T, EstadoN nuevoC, int indiceSimbolo);
+		EstadoN cerradura_E(EstadoN T, AFN afn, int auxEstado, int nSimbolos);
 		int destado();
 };
