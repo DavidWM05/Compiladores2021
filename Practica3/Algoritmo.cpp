@@ -11,10 +11,10 @@
 using namespace std;
 
 void Algoritmo::iniciarAlgoritmo(){
-	//Variables
-	int nEstados, nSimbolos,nFinales; //numero de estados | numero de simbolos
+	//VARIABLES DE ENTRADA
+	int nEstados, nSimbolos,nFinales; //Numero de estados | Numero de simbolos | Numero de simbolos finales
 	
-	//Entrada de datos
+	//SOLICITUS DE DATOS
 	cout<<"Numero de estados: ";
 	cin>>nEstados;
 	cout<<"Numero de simbolos: ";
@@ -23,9 +23,9 @@ void Algoritmo::iniciarAlgoritmo(){
 	cin>>nFinales;
 	cin.ignore();						//Se limpia el buffer
 	
-	string estados[nEstados];			//vector de estados
-	string simbolos[nSimbolos];			//vector de simbolos
-	string estadoI,estadosF[nFinales];	//estado inicial | vector de estados finales
+	string estados[nEstados];			//Vector de estados
+	string simbolos[nSimbolos];			//Vector de simbolos
+	string estadoI,estadosF[nFinales];	//Estado inicial | Vector de estados finales
 	
 	for(int i=0;i<nEstados;i++){		//Se guardan los estados
 		stringstream ss;				//clase auxiliar para convertir int a string
@@ -33,7 +33,7 @@ void Algoritmo::iniciarAlgoritmo(){
 		ss>>estados[i];
 	}
 	
-	estadoI = estados[0]; 				//se guarda el estado inicial
+	estadoI = estados[0]; 				//Se guarda el estado inicial
 	
 	cout<<"\nIngresa los estados finales"<<endl;
 	for(int i=0;i<nFinales;i++){		//Se solicita al usuario que ingrese los estados finales
@@ -48,17 +48,18 @@ void Algoritmo::iniciarAlgoritmo(){
 	}		
 	cout<<endl;
 	
+	AFN afn = AFN(estados,simbolos,estadoI,estadosF,nEstados,nSimbolos,nFinales); //se crea el objeto AFN mandandole los datos ingresados
+	afn.solicitarTransiciones();		//Se solicita al usuario que ingrese la tabla de transiciones
 	
-	AFN afn = AFN(estados,simbolos,estadoI,estadosF,nEstados,nSimbolos,nFinales);
-	afn.solicitarTransiciones();
-	//-------------------------------------------------------
+	//---------------------------------| IMPLEMENTACION DE ALGORITMO TOMADO DEL AHO |--------------------------------------
 	
-	//destados=1;//hay estados sin marcar
+	vector<string> producciones; //Vector que guardara las producciones generadas
+	
 	do{
-		if(candidatos.empty()==true){//si el vector candidato ESTA vacio entonces hay que agregar el candidato inicial
-			EstadoN T;
-			T.marcarDestado();
-			T.ingresarNucleo(0);	//Estado inicial
+		if(candidatos.empty()==true){//Si el vector candidato ESTA vacio entonces hay que agregar el candidato inicial
+			EstadoN T;				//Objeto Estado Nuevo 
+			T.marcarDestado();		//Se marca como destado
+			T.ingresarNucleo(0);	//El nucleo del primer candidato es el estado inicial
 			
 			Estado auxiliar = afn.obtenerT_Estado(0,nSimbolos-1);	//Se obtienen todas las transiciones epsilon del estado 0
 			
@@ -76,8 +77,44 @@ void Algoritmo::iniciarAlgoritmo(){
 			for(int i=0;i<nSimbolos-1;i++){//se omite el simbolo epsilon
 				EstadoN nuevoC;
 				nuevoC = mover(afn,T,nuevoC,i);//Se obtiene el nucleo
-				nuevoC.marcarDestado();
-				candidatos.push_back(nuevoC);
+			
+			
+				int nucleoExistente=-1;
+				
+				for(int j=0;j<candidatos.size();j++){
+					EstadoN auxiliar = candidatos[j];	
+					
+					if(compararNucleos(auxiliar,nuevoC)!=true){
+						continue;
+					}else{
+						nucleoExistente=j;
+						break;
+					}
+				}		
+				
+				if(nucleoExistente==-1){
+					string aux, produccion = " ";
+					stringstream ss;				//clase auxiliar para convertir int a string
+										
+					nuevoC.marcarDestado();
+					candidatos.push_back(nuevoC);
+					
+					ss<<(candidatos.size()-1);
+					ss>>aux;
+					
+					produccion += "0N -> "+simbolos[i]+" -> "+aux+"N";
+					producciones.push_back(produccion);
+				}else{//El nucleo es igual a uno ya existente
+					string aux,aux2, produccion = " ";
+					stringstream ss,ss2;				//clase auxiliar para convertir int a string
+														
+					ss<<nucleoExistente;
+					ss>>aux;
+					
+					produccion += "0N -> "+simbolos[i]+" -> "+aux+"N";
+					producciones.push_back(produccion);					
+				}
+				
 			}
 			
 			destado();
@@ -123,40 +160,63 @@ void Algoritmo::iniciarAlgoritmo(){
 				EstadoN nuevoC;
 				nuevoC = mover(afn,T,nuevoC,i);
 				
-				nuevoC.mostrarNucleo();
-				cout<<endl;
+				//nuevoC.mostrarNucleo();
+				//cout<<endl;
 				
-				int nucleoExistente=0;//0 no existe | 1 si existe
+				int nucleoExistente=-1;//-1 no existe | >0 si existe
 				
-				for(int i=0;i<candidatos.size();i++){//Se compara el nucleo del candidato nuevo con los que ya estan agregados
-					EstadoN auxiliar = candidatos[i];
+				for(int j=0;j<candidatos.size();j++){//Se compara el nucleo del candidato nuevo con los que ya estan agregados
+					EstadoN auxiliar = candidatos[j];
 					if(compararNucleos(auxiliar,nuevoC)!=true){
 						continue;
 					}else{
-						nucleoExistente=1;
+						nucleoExistente=j;//se guarda el candidato al que es igual
 						break;
 					}
 				}
 				
 				//Condicion sobre nucleo
-				if(nucleoExistente==0){//El nucleo no existe
+				if(nucleoExistente==-1){//El nucleo no existe
+					string aux,aux2, produccion = " ";
+					stringstream ss,ss2;				//clase auxiliar para convertir int a string
+					
+					
 					nuevoC.marcarDestado();
 					candidatos.push_back(nuevoC);
+					
+														
+					ss<<(candidatos.size()-1);
+					ss>>aux;
+					
+					ss2<<indiceCandidato;
+					ss2>>aux2;
+					
+					produccion += aux2+"N -> "+simbolos[i]+" -> "+aux+"N";
+					producciones.push_back(produccion);
+					
+				}else{//El nucleo es igual a uno ya existente
+					string aux,aux2, produccion = " ";
+					stringstream ss,ss2;				//clase auxiliar para convertir int a string
+														
+					ss<<nucleoExistente;
+					ss>>aux;
+					
+					ss2<<indiceCandidato;
+					ss2>>aux2;
+					
+					produccion += aux2+"N -> "+simbolos[i]+" -> "+aux+"N";
+					producciones.push_back(produccion);					
 				}
 			}	
-			
-			/*
-			candidatos.push_back(T);
-			
-			*/
-			
 			destado();	//Se actualiza destados
 		}
 	}while(destados!=0);//end do - while
 
 	cout<<"Destados: "<<destados<<endl;
 	
-	for(int i=0;i<candidatos.size();i++){//--------------IMPRESION DE LOS CANDIDATOS
+	//--------------IMPRESION DE LOS ESTADOS CANDIDATOS
+	cout<<"\tESTADOS NUEVOS\n"<<endl;
+	for(int i=0;i<candidatos.size();i++){
 		cout<< "Estado "<<i<<"N:{";
 		EstadoN aux = candidatos[i];
 		aux.mostrarNucleo();
@@ -164,8 +224,13 @@ void Algoritmo::iniciarAlgoritmo(){
 		aux.imprimirDatos();
 		cout<<"}"<<endl;
 	}
+	
+	//--------------IMPRESION DE LAS PRODUCCIONES
+	cout<<"\n\tTRANSICIONES\n"<<endl;
+	for(int i=0;i<producciones.size();i++){
+		cout<< producciones[i] <<endl;
+	}
 }
-
 EstadoN Algoritmo::mover(AFN afx,EstadoN T, EstadoN nuevoC, int iSimbolo){
 	//NOTA: agragar bloque para un recorrido total para x simbolo	
 	int vectorT=T.obtenerTamanio();
@@ -230,4 +295,3 @@ bool Algoritmo::compararNucleos(EstadoN e1, EstadoN e2){
 		return false;
 	}
 }
-
