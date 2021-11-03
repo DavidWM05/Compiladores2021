@@ -117,24 +117,40 @@ void Algoritmo::iniciarAlgoritmo(){
 			T.desmarcarDestado();
 			candidatos[indiceCandidato]=T;
 			
+			//NUEVOS CANDIDATOS
+			
+			for(int i=0;i<nSimbolos-1;i++){//se omite el simbolo epsilon
+				EstadoN nuevoC;
+				nuevoC = mover(afn,T,nuevoC,i);
+				
+				nuevoC.mostrarNucleo();
+				cout<<endl;
+				
+				int nucleoExistente=0;//0 no existe | 1 si existe
+				
+				for(int i=0;i<candidatos.size();i++){//Se compara el nucleo del candidato nuevo con los que ya estan agregados
+					EstadoN auxiliar = candidatos[i];
+					if(compararNucleos(auxiliar,nuevoC)!=true){
+						continue;
+					}else{
+						nucleoExistente=1;
+						break;
+					}
+				}
+				
+				//Condicion sobre nucleo
+				if(nucleoExistente==0){//El nucleo no existe
+					nuevoC.marcarDestado();
+					candidatos.push_back(nuevoC);
+				}
+			}	
+			
 			/*
-			
-			
-			
-			
-			
 			candidatos.push_back(T);
 			
-			//se evalua a donde se llega con los n simbolos en el estado nuevo A o inicial
-			EstadoN nuevoC;
-			for(int i=0;i<nSimbolos-2;i++){//se omite el simbolo epsilon
-				nuevoC = mover(afn,T,nuevoC,i);
-			}
-			nuevoC.marcarDestado();
-			candidatos.push_back(nuevoC);
 			*/
 			
-			destado();					
+			destado();	//Se actualiza destados
 		}
 	}while(destados!=0);//end do - while
 
@@ -151,18 +167,35 @@ void Algoritmo::iniciarAlgoritmo(){
 }
 
 EstadoN Algoritmo::mover(AFN afx,EstadoN T, EstadoN nuevoC, int iSimbolo){
-	//NOTA: agragar bloque para un recorrido total para x simbolo
-	int nucleo = -1;
+	//NOTA: agragar bloque para un recorrido total para x simbolo	
+	int vectorT=T.obtenerTamanio();
+	int nucleoT=T.nucleoTamanio();
+	int n = vectorT+nucleoT;
 	
-	for(int i=0;i<T.obtenerTamanio();i++){
-		int auxEstado = T.obtenerTransicion(i); //Estados del candidato inicial
-		Estado auxiliar = afx.obtenerT_Estado(auxEstado,iSimbolo);
+	for(int i=0,j=0;i<n;i++){
 		
-		if(auxiliar.estaVacia()!=true){
-			nuevoC.ingresarNucleo(auxiliar.obtenerTransicion(0));
-		}else{
-			continue;
+		if(i<vectorT){//se recorren primero los que no son nucleos
+			int auxEstado = T.obtenerTransicion(i); //Estados
+			Estado auxiliar = afx.obtenerT_Estado(auxEstado,iSimbolo);
+			
+			if(auxiliar.estaVacia()!=true){
+				nuevoC.ingresarNucleo(auxiliar.obtenerTransicion(0));
+			}else{
+				continue;
+			}
+		}else{//se recorre el nucleo
+			int auxEstado = T.obtenerNucleo(j);
+			Estado auxiliar = afx.obtenerT_Estado(auxEstado,iSimbolo);
+			j++;
+			
+			if(auxiliar.estaVacia()!=true){
+				nuevoC.ingresarNucleo(auxiliar.obtenerTransicion(0));
+			}else{
+				continue;
+			}
 		}
+		
+		
 	}
 	
 	return nuevoC;
@@ -187,7 +220,14 @@ void Algoritmo::destado(){//comprueba si quedan estado sin marcar
 		destados = aux.obtenerDestado();
 	}
 }
-
-
-
+bool Algoritmo::compararNucleos(EstadoN e1, EstadoN e2){
+	vector<int> n1 = e1.obtenerNucleoVector();
+	vector<int> n2 = e2.obtenerNucleoVector();
+	
+	if(n1==n2){
+		return true;
+	}else{
+		return false;
+	}
+}
 

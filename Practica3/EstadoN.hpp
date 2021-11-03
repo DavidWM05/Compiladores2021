@@ -13,8 +13,10 @@ class EstadoN : public Estado{
 		void mostrarNucleo();
 		void ingresarNucleo(int estado);
 		int obtenerNucleo(int i);
+		vector<int> obtenerNucleoVector();
 		int nucleoTamanio();
 		void marcarDestado();
 		void desmarcarDestado();
 		int obtenerDestado();
+		void ordenarNucleo();
 };

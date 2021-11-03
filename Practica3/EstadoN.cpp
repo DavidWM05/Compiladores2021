@@ -25,4 +25,24 @@ int EstadoN::obtenerNucleo(int i){
 int EstadoN::nucleoTamanio(){
 	return nucleo.size();
 }
+vector<int> EstadoN::obtenerNucleoVector(){
+	return nucleo;
+}
+void EstadoN::ordenarNucleo(){
+	int l = nucleo.size(),j,i,aux;
+
+	// Ordenación
+	for(i=0; i<l; i++){
+		// Comparaciones
+		for(j=0; j<l-i; j++){
+		// Intercambiar los elementos
+		if(nucleo[j] > nucleo[j+1]){
+			aux=nucleo[j];
+			nucleo[j]=nucleo[j+1];
+			nucleo[j+1]=aux;
+			}
+		}
+	}
+	
+}
 
