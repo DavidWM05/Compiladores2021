@@ -117,7 +117,7 @@ void Algoritmo::iniciarAlgoritmo(){
 				
 			}
 			
-			destado();
+			destado();	//se actualiza destados
 		}
 		else{						 //El vector candidato NO esta vacio
 			EstadoN T;
@@ -159,10 +159,6 @@ void Algoritmo::iniciarAlgoritmo(){
 			for(int i=0;i<nSimbolos-1;i++){//se omite el simbolo epsilon
 				EstadoN nuevoC;
 				nuevoC = mover(afn,T,nuevoC,i);
-				
-				//nuevoC.mostrarNucleo();
-				//cout<<endl;
-				
 				int nucleoExistente=-1;//-1 no existe | >0 si existe
 				
 				for(int j=0;j<candidatos.size();j++){//Se compara el nucleo del candidato nuevo con los que ya estan agregados

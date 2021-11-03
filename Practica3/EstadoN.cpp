@@ -45,4 +45,3 @@ void EstadoN::ordenarNucleo(){
 	}
 	
 }
-

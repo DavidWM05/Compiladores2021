@@ -23,7 +23,6 @@ AFN::AFN(string _S[],string _E[],string _S0,string _F[],int nEstados,int nSimbol
 	for(int i=0;i<Fcount;i++)//Finales
 		F.push_back(_F[i]);
 }
-
 void AFN::solicitarTransiciones(){
 			     //Estados Simbolos
 	//transiciones[Scount][Ecount];
@@ -54,7 +53,6 @@ void AFN::solicitarTransiciones(){
 		}
 	}
 }
-
 void AFN::imprimirTransiciones(){
 	for(int i=0;i<Scount;i++){
 		for(int j=0;j<Ecount;j++){
@@ -66,33 +64,3 @@ void AFN::imprimirTransiciones(){
 Estado AFN::obtenerT_Estado(int i,int j){
 	return transiciones[i][j]; 
 }
-
-/*
-stringstream intValue(S0);
-	int auxiliar;
-	intValue >> auxiliar;
-	
-	EstadoN inicial;
-	inicial.ingresarNucleo(auxiliar);
-	
-	auxiliar = transiciones[0][Ecount-1].obtenerTamanio(); //tramaño de vector epsilon para estado 0
-	
-	for(int i=0;i<auxiliar;i++){
-		int epsilon = transiciones[0][Ecount-1].obtenerEpsilon(i);
-		inicial.agregarTransicion(epsilon);
-	}
-		
-	candidatos.push_back(inicial);
-	
-	EstadoN nuevo = candidatos[0];
-	
-	nuevo.mostrarNucleo();
-	nuevo.imprimirDatos();
-
-
-
-Imprimir Transicion	
-	
-*/
-	//--------------------------------------
-
