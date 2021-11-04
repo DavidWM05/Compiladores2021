@@ -2,7 +2,7 @@
 OBJS = Main.o Algoritmo.o AFN.o Estado.o EstadoN.o
 
 #Reglas para compilar el programa principal
-all: programa
+#all: programa
 
 programa: $(OBJS)
 	g++ -o programa $(OBJS)
@@ -24,4 +24,4 @@ EstadoN.o: EstadoN.cpp EstadoN.hpp
 
 #Se eliminan los archivos .o
 clean:
-	rm -f programa OBJS
+	rm -f programa $(OBJS)
