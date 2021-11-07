@@ -4,8 +4,7 @@
 #include <vector> 
 #include <sstream>
 #include <cstring>
-#include "EstadoN.hpp"
-#include "Estado.hpp"
+#include "Transicion.hpp"
 #define	MAX 100
 
 using namespace std;
@@ -17,11 +16,18 @@ class AFN{
 		string S0;						//estado inicial
 		vector<string> F;				//conjunto de estados finales
 		int Scount,Ecount,Fcount; 		//tamaño de S y E sin comas
-		Estado transiciones[MAX][MAX]; 	//Matriz de transiciones[nEstados][nSimbolos]
+		Transicion tablaTransiciones[MAX][MAX]; 	//Matriz de transiciones[nEstados][nSimbolos]
 		
 	public:
-		AFN(string _S[],string _E[],string _S0,string _F[],int nEstados,int nSimbolos,int nFinales);
-		void solicitarTransiciones();
-		void imprimirTransiciones();
-		Estado obtenerT_Estado(int i,int j);
+		void ingresarTupla();
+		int totalEstados();
+		string obtenerIndiceEstado(int i);
+		int totalSimbolos();
+		string indiceSimbolos(int i);		
+		int totalFinales();
+		string indiceFinales(int i);
+		string	obtenerInicial();	
+		Transicion obtenerIndiceTabla(int i,int j);
+		void imprimirTabla();
+
 };

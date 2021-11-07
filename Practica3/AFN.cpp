@@ -5,33 +5,60 @@
 #include <cstring>
 #include <sstream>
 #include "AFN.hpp"
-#include "Estado.hpp"
-#include "EstadoN.hpp"
+#include "Transicion.hpp"
+#include "EstadoCandidato.hpp"
 
 using namespace std;
 
-AFN::AFN(string _S[],string _E[],string _S0,string _F[],int nEstados,int nSimbolos,int nFinales){
-	Scount = nEstados;
-	Ecount = nSimbolos;
-	Fcount = nFinales;
-	S0=_S0;
-	
-	for(int i=0;i<Scount;i++)//Estados
-		S.push_back(_S[i]);
-	for(int i=0;i<Ecount;i++)//Simbolos
-		E.push_back(_E[i]);
-	for(int i=0;i<Fcount;i++)//Finales
-		F.push_back(_F[i]);
-}
-void AFN::solicitarTransiciones(){
-			     //Estados Simbolos
-	//transiciones[Scount][Ecount];
-	
+void AFN::ingresarTupla(){
+	//SOLICITUD DE DATOS
+	cout<<"Numero de estados: ";
+	cin>>Scount;
+	cout<<"Numero de simbolos: ";
+	cin>>Ecount;
+	cout<<"Numero de estados finales: ";
+	cin>>Fcount;
+	cin.ignore();						//Se limpia el buffer
+
+	string estados[Scount];			//Vector de estados
+	string simbolos[Ecount];			//Vector de simbolos
+	string estadoI,estadosF[Fcount];	//Estado inicial | Vector de estados finales
+
+	//Estados
+	for(int i=0;i<Scount;i++){		//Se guardan los estados
+		string aux;
+		stringstream ss;				//clase auxiliar para convertir int a string
+	 	ss<<i;
+		ss>>aux;
+
+		S.push_back(aux);
+	}
+	//SIMBOLOS
+	cout<<"Ingresa los simbolos"<<endl;	//Se solicita al usuario ingresar los simbolos 
+	for(int i=0;i<Ecount;i++){
+		string aux;
+		cout<<"["<<i<<"]: ";
+		getline(cin,aux);
+
+		E.push_back(aux);
+	}
+	//ESTADO INCIAL
+	S0 = S[0]; 		
+	//ESTADOS FINALES
+	cout<<"\nIngresa los estados finales"<<endl;
+	for(int i=0;i<Fcount;i++){		//Se solicita al usuario que ingrese los estados finales
+		string aux;
+		cout<<"F["<<i<<"]: ";
+		getline(cin,aux);
+
+		F.push_back(aux);
+	}
+	//TABLA DE TANSICIONES
 	for(int i=0;i<Scount;i++){
 		cout<<" Estado "<<S[i]<<": "<<endl; 
 		
 		for(int j=0;j<Ecount;j++){//Transiciones de estados con los simbolos
-			int control=1;	//variable que controlara las transiciones
+			int control=1;	
 			int aux;
 			cout<<"  Simbolo "<<E[j]<<": "<<endl;
 			
@@ -45,7 +72,7 @@ void AFN::solicitarTransiciones(){
 							cin.ignore();			
 							cout<< "    " <<E[j]<<" -> ";
 							cin>>aux;
-							transiciones[i][j].agregarTransicion(aux);			
+							tablaTransiciones[i][j].agregarTransicion(aux);			
 					break;
 					default: cout<<"Opcion no valida, solo se puede ingresar 0=no | 1=si ";
 				}//end switch
@@ -53,14 +80,39 @@ void AFN::solicitarTransiciones(){
 		}
 	}
 }
-void AFN::imprimirTransiciones(){
+void AFN::imprimirTabla(){
 	for(int i=0;i<Scount;i++){
 		for(int j=0;j<Ecount;j++){
-			transiciones[i][j].imprimirDatos();
+			tablaTransiciones[i][j].imprimirElementos();
 		}
 		cout<<endl;
 	}
 }
-Estado AFN::obtenerT_Estado(int i,int j){
-	return transiciones[i][j]; 
+Transicion AFN::obtenerIndiceTabla(int i,int j){
+	return tablaTransiciones[i][j]; 
+}
+
+int AFN::totalEstados(){
+	return S.size();
+}
+string AFN::obtenerIndiceEstado(int i){
+	return S[i];
+}
+
+int AFN::totalSimbolos(){
+	return E.size();
+}
+string AFN::indiceSimbolos(int i){
+	return E[i];
+}
+
+int AFN::totalFinales(){
+	return F.size();
+}
+string AFN::indiceFinales(int i){
+	return F[i];
+}
+
+string	AFN::obtenerInicial(){
+	return S0;
 }

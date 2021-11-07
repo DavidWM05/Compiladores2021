@@ -2,8 +2,8 @@
 #include <iostream> 
 #include <vector> 
 #include <string>
-#include "EstadoN.hpp"
-#include "Estado.hpp"
+#include "EstadoCandidato.hpp"
+#include "Transicion.hpp"
 #include "Algoritmo.hpp"
 #include "AFN.hpp"
 
@@ -11,13 +11,13 @@ using namespace std;
 
 class Algoritmo{
 	private:
-		vector<EstadoN> candidatos;
-		int destados;
+		vector<EstadoCandidato> candidatos;
+		bool destadosRestantes;
 	
 	public:
 		void iniciarAlgoritmo();
-		EstadoN mover(AFN afx,EstadoN T, EstadoN nuevoC, int indiceSimbolo);
-		EstadoN cerradura_E(EstadoN T, AFN afn, int auxEstado, int nSimbolos);
+		EstadoCandidato mover(AFN afx,EstadoCandidato T, EstadoCandidato nuevoC, int indiceSimbolo);
+		EstadoCandidato cerradura_E(EstadoCandidato T, AFN afn, int auxEstado, int nSimbolos);
 		void destado();
-		bool compararNucleos(EstadoN e1, EstadoN e2);
+		bool compararNucleos(EstadoCandidato e1, EstadoCandidato e2);
 };

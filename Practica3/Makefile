@@ -1,8 +1,8 @@
 #Variables
-OBJS = Main.o Algoritmo.o AFN.o Estado.o EstadoN.o
+OBJS = Main.o Algoritmo.o AFN.o Transicion.o EstadoCandidato.o
 
 #Reglas para compilar el programa principal
-#all: programa
+all: programa
 
 programa: $(OBJS)
 	g++ -o programa $(OBJS)
@@ -16,11 +16,11 @@ Algoritmo.o: Algoritmo.cpp Algoritmo.hpp
 AFN.o: AFN.cpp AFN.hpp
 	g++ -c AFN.cpp
 
-Estado.o: Estado.cpp Estado.hpp
-	g++ -c Estado.cpp
+Transicion.o: Transicion.cpp Transicion.hpp
+	g++ -c Transicion.cpp
 
-EstadoN.o: EstadoN.cpp EstadoN.hpp
-	g++ -c EstadoN.cpp
+EstadoCandidato.o: EstadoCandidato.cpp EstadoCandidato.hpp
+	g++ -c EstadoCandidato.cpp
 
 #Se eliminan los archivos .o
 clean:

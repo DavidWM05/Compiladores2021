@@ -1,22 +1,27 @@
 #pragma once
 #include <iostream> 
 #include <vector>
-#include "Estado.hpp"
 
 using namespace std;
 
-class EstadoN : public Estado{
+class EstadoCandidato{
 	private:
 		vector<int> nucleo;
-		int destado; //1 verdadero | 0 falso
+		vector<int> estados;
+		bool marcaDestado;
 	public:
 		void mostrarNucleo();
 		void ingresarNucleo(int estado);
-		int obtenerNucleo(int i);
+		int obtenerIndiceNucleo(int i);
 		vector<int> obtenerNucleoVector();
 		int nucleoTamanio();
 		void marcarDestado();
 		void desmarcarDestado();
-		int obtenerDestado();
+		bool obtenerDestado();
+		void agregarEstado(int estado);
+		bool tablaVacia();
+		void imprimirTabla();
+		int obtenerEstado(int i); //se debe mandar Ecount-1 (tamaño de simbolos - 1)
+		int obtenerTamanioEstados();
 		void ordenarNucleo();
 };

@@ -4,13 +4,13 @@
 
 using namespace std;
 
-class Estado{
+class Transicion{
 	private:
-		vector<int> transicion;
+		vector<int> transiciones;
 	public:
 		void agregarTransicion(int estado);
 		bool estaVacia();
-		void imprimirDatos();
+		void imprimirElementos();
 		int obtenerTransicion(int i); //se debe mandar Ecount-1 (tamaño de simbolos - 1)
 		int obtenerTamanio();
 };
