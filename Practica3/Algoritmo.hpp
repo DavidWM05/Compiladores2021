@@ -18,6 +18,7 @@ class Algoritmo{
 		void iniciarAlgoritmo();
 		EstadoCandidato mover(AFN afx,EstadoCandidato T, EstadoCandidato nuevoC, int indiceSimbolo);
 		EstadoCandidato cerradura_E(EstadoCandidato T, AFN afn, int auxEstado, int nSimbolos);
-		void destado();
+		void actualizarDestados();
 		bool compararNucleos(EstadoCandidato e1, EstadoCandidato e2);
+		void limpiar_pantalla();
 };

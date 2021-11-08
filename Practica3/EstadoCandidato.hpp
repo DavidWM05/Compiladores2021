@@ -23,5 +23,4 @@ class EstadoCandidato{
 		void imprimirTabla();
 		int obtenerEstado(int i); //se debe mandar Ecount-1 (tamaño de simbolos - 1)
 		int obtenerTamanioEstados();
-		void ordenarNucleo();
 };

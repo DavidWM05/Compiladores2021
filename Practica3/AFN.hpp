@@ -11,11 +11,11 @@ using namespace std;
 
 class AFN{
 	private:
-		vector<string> S;				//estados
-		vector<string> E;				//conjunto de simbolos
-		string S0;						//estado inicial
-		vector<string> F;				//conjunto de estados finales
-		int Scount,Ecount,Fcount; 		//tamaño de S y E sin comas
+		vector<string> S;				//Vector de Estados
+		vector<string> E;				//Vector de Simbolos
+		string S0;						//Estado inicial
+		vector<string> F;				//Vector de Estados Finales
+		int Scount,Ecount,Fcount; 		//Tamaño de vectores S, E y F
 		Transicion tablaTransiciones[MAX][MAX]; 	//Matriz de transiciones[nEstados][nSimbolos]
 		
 	public:
@@ -29,5 +29,5 @@ class AFN{
 		string	obtenerInicial();	
 		Transicion obtenerIndiceTabla(int i,int j);
 		void imprimirTabla();
-
+		void imprimirTupla();
 };

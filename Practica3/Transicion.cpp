@@ -12,7 +12,10 @@ bool Transicion::estaVacia(){
 }
 void Transicion::imprimirElementos(){
 	for(int i=0;i<transiciones.size();i++){
-		cout<< transiciones[i] <<" ";
+		if(i+1<transiciones.size())
+			cout << transiciones[i] <<",";
+		else
+			cout << transiciones[i];
 	}
 }
 int Transicion::obtenerTransicion(int i){

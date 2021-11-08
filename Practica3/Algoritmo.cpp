@@ -1,3 +1,6 @@
+#ifdef _WIN32
+  #include<windows.h>
+#endif 
 #include <iostream>
 #include <string> 
 #include <vector> 
@@ -12,20 +15,21 @@ using namespace std;
 
 void Algoritmo::iniciarAlgoritmo(){
 	
-	AFN afn; //se crea el objeto AFN mandandole los datos ingresados
-	afn.ingresarTupla();		//Se solicita al usuario que ingrese la tupla
+	AFN afn;
+	afn.ingresarTupla();
 	
 	int nEstados = afn.totalEstados();
 	int nSimbolos = afn.totalSimbolos();
 	int nFinales = afn.totalFinales();
 	
-	//---------------------------------| IMPLEMENTACION DE ALGORITMO TOMADO DEL AHO |--------------------------------------
+	limpiar_pantalla();
+	//---------------------------------| IMPLEMENTACION DE ALGORITMO TOMADO DEL LIBRO AHO |--------------------------------------
 	
-	vector<string> producciones; //Vector que guardara las producciones generadas
+	vector<string> producciones;
 	
 	do{
-		if(candidatos.empty()==true){//Si el vector candidato ESTA vacio entonces hay que agregar el candidato inicial
-			EstadoCandidato T;				//Objeto Estado Nuevo 
+		if(candidatos.empty()==true){//Si el vector de candidatos ESTA vacio entonces hay que agregar el candidato inicial
+			EstadoCandidato T;		//Objeto Estado Candidato
 			T.marcarDestado();		//Se marca como destado
 			T.ingresarNucleo(0);	//El nucleo del primer candidato es el estado inicial
 			
@@ -34,20 +38,19 @@ void Algoritmo::iniciarAlgoritmo(){
 			for(int i=0;i<auxiliar.obtenerTamanio();i++){ //se recorren los estados que se pasa en esa transicion epsilon
 				int auxEstado = auxiliar.obtenerTransicion(i);
 				T.agregarEstado(auxEstado);
-				T = cerradura_E(T,afn,auxEstado,nSimbolos);// Estado inicial | AFN | estado epsilon 
+				T = cerradura_E(T,afn,auxEstado,nSimbolos);
 			}
 			
 			T.desmarcarDestado();
 			candidatos.push_back(T);
 			
-			//se evalua a donde se llega con los n simbolos en el estado nuevo A o inicial
+			//SE EVALUA A DONDE SE LLEGA CON LOS N SIMBOLOS EN EL ESTADO CANDIDATO INICIAL
 			
-			for(int i=0;i<nSimbolos-1;i++){//se omite el simbolo epsilon
+			for(int i=0;i<nSimbolos-1;i++){		//Se omite el simbolo epsilon
 				EstadoCandidato nuevoC;
-				nuevoC = mover(afn,T,nuevoC,i);//Se obtiene el nucleo
+				nuevoC = mover(afn,T,nuevoC,i);	//Se obtiene el nucleo con la funcion mover
 			
-			
-				int nucleoExistente=-1;
+				int nucleoExistente=-1; //-1 no existe | >0 si existe
 				
 				for(int j=0;j<candidatos.size();j++){
 					EstadoCandidato auxiliar = candidatos[j];	
@@ -62,7 +65,7 @@ void Algoritmo::iniciarAlgoritmo(){
 				
 				if(nucleoExistente==-1){
 					string aux, produccion = " ";
-					stringstream ss;				//clase auxiliar para convertir int a string
+					stringstream ss;
 										
 					nuevoC.marcarDestado();
 					candidatos.push_back(nuevoC);
@@ -70,31 +73,31 @@ void Algoritmo::iniciarAlgoritmo(){
 					ss<<(candidatos.size()-1);
 					ss>>aux;
 					
-					produccion += "0N -> "+afn.indiceSimbolos(i)+" -> "+aux+"N";//-----------------------------
+					produccion += "0N -> "+afn.indiceSimbolos(i)+" -> "+aux+"N";
 					producciones.push_back(produccion);
 				}else{//El nucleo es igual a uno ya existente
 					string aux,aux2, produccion = " ";
-					stringstream ss,ss2;				//clase auxiliar para convertir int a string
+					stringstream ss,ss2;
 														
 					ss<<nucleoExistente;
 					ss>>aux;
 					
-					produccion += "0N -> "+afn.indiceSimbolos(i)+" -> "+aux+"N";//---------------------------
+					produccion += "0N -> "+afn.indiceSimbolos(i)+" -> "+aux+"N";
 					producciones.push_back(produccion);					
 				}
 				
 			}
 			
-			destado();	//se actualiza destados
+			actualizarDestados();
 		}
-		else{						 //El vector candidato NO esta vacio
+		else{						 //El vector de candidatos NO esta vacio
 			EstadoCandidato T;
 			int indiceCandidato;	//variable que guardara el indice en el vector de candidatos para despues poder desmarcarlo
 			
 			for(int i=0;i<candidatos.size();i++){ //se recorren los candidatos hasta encontrar el siguiente destado marcado
 				EstadoCandidato auxiliar = candidatos[i];
 				
-				if(auxiliar.obtenerDestado()!=0){
+				if(auxiliar.obtenerDestado()!=false){
 					T = candidatos[i];
 					indiceCandidato = i;
 					break;
@@ -127,7 +130,7 @@ void Algoritmo::iniciarAlgoritmo(){
 			for(int i=0;i<nSimbolos-1;i++){//se omite el simbolo epsilon
 				EstadoCandidato nuevoC;
 				nuevoC = mover(afn,T,nuevoC,i);
-				int nucleoExistente=-1;//-1 no existe | >0 si existe
+				int nucleoExistente=-1;   //-1 no existe | >0 si existe
 				
 				for(int j=0;j<candidatos.size();j++){//Se compara el nucleo del candidato nuevo con los que ya estan agregados
 					EstadoCandidato auxiliar = candidatos[j];
@@ -160,7 +163,7 @@ void Algoritmo::iniciarAlgoritmo(){
 					
 				}else{//El nucleo es igual a uno ya existente
 					string aux,aux2, produccion = " ";
-					stringstream ss,ss2;				//clase auxiliar para convertir int a string
+					stringstream ss,ss2;				
 														
 					ss<<nucleoExistente;
 					ss>>aux;
@@ -172,11 +175,12 @@ void Algoritmo::iniciarAlgoritmo(){
 					producciones.push_back(produccion);					
 				}
 			}	
-			destado();	//Se actualiza destados
+			actualizarDestados();
 		}
 	}while(destadosRestantes!=0);//end do - while
-
-	cout<<"Destados: "<<destadosRestantes<<endl;
+	//--------------IMPRESION DE TUPLA INGRESADA
+	cout<<"\tTUPLA DEL AFN\n"<<endl;
+	afn.imprimirTupla();
 	
 	//--------------IMPRESION DE LOS ESTADOS CANDIDATOS
 	cout<<"\tESTADOS NUEVOS\n"<<endl;
@@ -243,7 +247,7 @@ EstadoCandidato Algoritmo::cerradura_E(EstadoCandidato T, AFN afn, int auxEstado
 		return T;	
 	}
 }
-void Algoritmo::destado(){//comprueba si quedan estado sin marcar
+void Algoritmo::actualizarDestados(){//comprueba si quedan estado sin marcar
 	for(int i=0;i<candidatos.size();i++){
 		EstadoCandidato aux = candidatos[i];
 		destadosRestantes = aux.obtenerDestado();
@@ -258,4 +262,11 @@ bool Algoritmo::compararNucleos(EstadoCandidato e1, EstadoCandidato e2){
 	}else{
 		return false;
 	}
+}
+void Algoritmo::limpiar_pantalla(){
+  #ifdef _WIN32
+    system("cls");
+  #else
+    system("clear");
+  #endif
 }

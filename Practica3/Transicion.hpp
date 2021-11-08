@@ -11,6 +11,6 @@ class Transicion{
 		void agregarTransicion(int estado);
 		bool estaVacia();
 		void imprimirElementos();
-		int obtenerTransicion(int i); //se debe mandar Ecount-1 (tamaño de simbolos - 1)
+		int obtenerTransicion(int i);
 		int obtenerTamanio();
 };
