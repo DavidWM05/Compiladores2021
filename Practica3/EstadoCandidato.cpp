@@ -1,5 +1,5 @@
 #include <iostream> 
-#include <vector>  //biblioteca
+#include <vector>
 #include "EstadoCandidato.hpp"
 
 void EstadoCandidato::mostrarNucleo(){
